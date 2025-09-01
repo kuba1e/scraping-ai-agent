@@ -47,15 +47,17 @@ def scrape_products_task(job_id: str, session_id:str, url: str):
 
             scraped_result = ScrapedProductsResult(session_id=session_id)
 
-            print(f'Products {products}')
+            db.add(scraped_result)
+
+            db.commit()
 
             scraped_result.products = [Product(name= product['product_name'], brand_name= product['brand_name'], price=product['price'], price_currency=product['price_currency'], images= product['images'] ) for product in products]
 
-            print(f'Scrapped result {scraped_result}')
-
-            db.add(scraped_result)
-
             job.scraping_products_result_id= scraped_result.id
+
+            job.status= 'completed'
+
+            job.completed_at =datetime.now()
 
             db.commit()
 
