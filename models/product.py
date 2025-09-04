@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, Column, String, JSON, DateTime, ForeignKey
+from sqlalchemy import Integer, Column, String, JSON, DateTime, ForeignKey, ARRAY
 from sqlalchemy.orm import relationship
 from  sqlalchemy.sql import func
 
@@ -16,7 +16,6 @@ class Product(Base):
     price = Column(Integer, nullable=True)
     price_currency = Column(String, nullable=True)
     images = Column(JSON, default=list)
-
     scraped_products_result = relationship('ScrapedProductsResult', back_populates='products')
 
 class ScrapedProductsResult(Base):
@@ -25,4 +24,4 @@ class ScrapedProductsResult(Base):
     id = Column(Integer, primary_key=True)
     session_id = Column(String, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    products = relationship('Product', back_populates='scraped_products_result')
+    products = relationship('Product', back_populates='scraped_products_result', lazy='joined')
